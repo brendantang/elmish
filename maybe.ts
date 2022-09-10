@@ -12,6 +12,17 @@ interface Nothing {
   type: typeof MaybeType.Nothing;
 }
 
+/**
+ * Represent values that may or may not exist. It can be useful if you have a record field that is only filled in sometimes. Or if a function takes a value sometimes, but does not absolutely need it.
+ * @example
+ * // A person, but maybe we do not know their age.
+ * interface Person {
+ *   name: string;
+ *   age: Maybe<number>;
+ * }
+ * const tom = { name: "Tom", age: Just(42) };
+ * const sue = { name: "Sue", age: Nothing() };
+ */
 export type Maybe<T> = Just<T> | Nothing;
 
 // Constructors
