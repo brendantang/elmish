@@ -39,13 +39,17 @@ Deno.test("map Tests", async (t) => {
       }, Result.Ok(2)),
     );
   });
+  await t.step("map Err", () => {
+    assertEquals(
+      Result.Err("error"),
+      Result.map((a: number): number => {
+        return a + 1;
+      }, Result.Err("error")),
+    );
+  });
 });
-/*
-                await t.step( "map Err" ,() =>{
-    assertEquals(Result.Err() "error") (Result.map ((+) 1) (Err "error"))
-}
-                ]
 
+/*
         mapNTests =
             describe "mapN Tests"
                 [ test "map2 Ok" <| \() -> Expect.equal (Ok 3) (Result.map2 (+) (Ok 1) (Ok 2))
