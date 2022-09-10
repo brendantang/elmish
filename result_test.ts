@@ -11,7 +11,7 @@ const isEven = (n: number): Result.Result<string, number> => {
 
 const toIntResult = (s: string): Result.Result<string, number> => {
   const parsed = parseInt(s);
-  if (parsed == NaN) {
+  if (isNaN(parsed)) {
     return Result.Err(`could not convert string '${s}' into an integer`);
   } else {
     return Result.Ok(parsed);
@@ -153,13 +153,13 @@ Deno.test("andThenTests", async (t) => {
   });
   await t.step("andThen first Err", () => {
     assertEquals(
-      Result.Err("could not convert string '4.2' into an Int"),
-      Result.andThen(isEven, toIntResult("4.2")),
+      Result.Err("could not convert string 'foo' into an integer"),
+      Result.andThen(isEven, toIntResult("foo")),
     );
   });
   await t.step("andThen second Err", () => {
     assertEquals(
-      Result.Err("number is odd"),
+      Result.Err("number is not an even integer"),
       Result.andThen(isEven, toIntResult("41")),
     );
   });
