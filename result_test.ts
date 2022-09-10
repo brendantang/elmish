@@ -62,12 +62,21 @@ Deno.test("mapNTests", async (t) => {
       ),
     );
   });
+
+  await t.step("map2 Err", () => {
+    assertEquals(
+      Err("x"),
+      Result.map2(
+        (a: number, b: number): number => {
+          return a + b;
+        },
+        Result.Ok(1),
+        Result.Err("x"),
+      ),
+    );
+  });
 });
 /*
-        =
-            describe "mapN Tests"
-                [ test "" <|
-                , test "map2 Err" <| \() -> Expect.equal (Err "x") (Result.map2 (+) (Ok 1) (Err "x"))
                 , test "map3 Ok" <| \() -> Expect.equal (Ok 6) (Result.map3 add3 (Ok 1) (Ok 2) (Ok 3))
                 , test "map3 Err" <| \() -> Expect.equal (Err "x") (Result.map3 add3 (Ok 1) (Ok 2) (Err "x"))
                 , test "map4 Ok" <| \() -> Expect.equal (Ok 10) (Result.map4 add4 (Ok 1) (Ok 2) (Ok 3) (Ok 4))
