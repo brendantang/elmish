@@ -12,18 +12,38 @@ interface Nothing {
   type: typeof MaybeType.Nothing;
 }
 
+/**
+ * Represent values that may or may not exist.
+ *
+ * @example
+ * // A person, but maybe we do not know their age.
+ * interface Person {
+ *   name: string;
+ *   age: Maybe<number>;
+ * }
+ * const tom = { name: "Tom", age: Just(42) };
+ * const sue = { name: "Sue", age: Nothing() };
+ */
 export type Maybe<T> = Just<T> | Nothing;
 
-// Constructors
+/** Construct a `Nothing` value */
 export const Nothing = (): Nothing => ({
   type: MaybeType.Nothing,
 });
 
+/** Create a `Just` value */
 export const Just = <T>(value: T): Just<T> => ({
   type: MaybeType.Just,
   value: value,
 });
 
+/**
+ * Provide a default value, turning an optional value into a normal value.
+ *
+ * @example
+ * withDefault(100, Just(42))  // 42
+ * withDefault(100, Nothing()  // 100
+ */
 export const withDefault = <T>(defaultValue: T, maybe: Maybe<T>): T => {
   switch (maybe.type) {
     case MaybeType.Nothing:
@@ -33,6 +53,12 @@ export const withDefault = <T>(defaultValue: T, maybe: Maybe<T>): T => {
   }
 };
 
+/**
+ * Transform a `Maybe` value with a given function:
+ * @example
+ * map(Math.sqrt, Just(9))    // Just(3)
+ * map(Math.sqrt, Nothing())  // Nothing()
+ */
 export const map = <A, B>(f: (a: A) => B, maybe: Maybe<A>): Maybe<B> => {
   switch (maybe.type) {
     case MaybeType.Nothing:
@@ -42,6 +68,7 @@ export const map = <A, B>(f: (a: A) => B, maybe: Maybe<A>): Maybe<B> => {
   }
 };
 
+/** Chain together many computations that may fail. */
 export const andThen = <A, B>(
   f: (val: A) => Maybe<B>,
   maybe: Maybe<A>,
@@ -54,6 +81,7 @@ export const andThen = <A, B>(
   }
 };
 
+/** Apply a function if all the arguments are `Just` a value. */
 export const map2 = <A, B, C>(
   f: (a: A, b: B) => C,
   m1: Maybe<A>,
