@@ -8,15 +8,15 @@ interface Ok<T> {
   value: T;
 }
 
-interface Err<E> {
+interface Err<X> {
   type: typeof ResultType.Err;
-  err: E;
+  err: X;
 }
 
-export type Result<E, T> = Ok<T> | Err<E>;
+export type Result<X, T> = Ok<T> | Err<X>;
 
 // Constructors
-export const Err = <E>(err: E): Err<E> => ({
+export const Err = <X>(err: X): Err<X> => ({
   type: ResultType.Err,
   err: err,
 });
@@ -28,10 +28,10 @@ export const Ok = <T>(value: T): Ok<T> => ({
 
 // Map
 
-export const map = <E, A, B>(
+export const map = <X, A, B>(
   f: (value: A) => B,
-  result: Result<E, A>,
-): Result<E, B> => {
+  result: Result<X, A>,
+): Result<X, B> => {
   switch (result.type) {
     case ResultType.Err:
       return Err(result.err);
@@ -40,11 +40,11 @@ export const map = <E, A, B>(
   }
 };
 
-export const map2 = <E, A, B, C>(
+export const map2 = <X, A, B, C>(
   f: (a: A, b: B) => C,
-  r1: Result<E, A>,
-  r2: Result<E, B>,
-): Result<E, C> => {
+  r1: Result<X, A>,
+  r2: Result<X, B>,
+): Result<X, C> => {
   switch (r1.type) {
     case ResultType.Err:
       return Err(r1.err);
@@ -58,12 +58,12 @@ export const map2 = <E, A, B, C>(
   }
 };
 
-export const map3 = <E, A, B, C, D>(
+export const map3 = <X, A, B, C, D>(
   f: (a: A, b: B, c: C) => D,
-  r1: Result<E, A>,
-  r2: Result<E, B>,
-  r3: Result<E, C>,
-): Result<E, D> => {
+  r1: Result<X, A>,
+  r2: Result<X, B>,
+  r3: Result<X, C>,
+): Result<X, D> => {
   switch (r1.type) {
     case ResultType.Err:
       return Err(r1.err);
@@ -82,13 +82,13 @@ export const map3 = <E, A, B, C, D>(
   }
 };
 
-export const map4 = <Er, A, B, C, D, E>(
+export const map4 = <X, A, B, C, D, E>(
   f: (a: A, b: B, c: C, d: D) => E,
-  r1: Result<Er, A>,
-  r2: Result<Er, B>,
-  r3: Result<Er, C>,
-  r4: Result<Er, D>,
-): Result<Er, E> => {
+  r1: Result<X, A>,
+  r2: Result<X, B>,
+  r3: Result<X, C>,
+  r4: Result<X, D>,
+): Result<X, E> => {
   switch (r1.type) {
     case ResultType.Err:
       return Err(r1.err);
@@ -111,14 +111,14 @@ export const map4 = <Er, A, B, C, D, E>(
       }
   }
 };
-export const map5 = <Er, A, B, C, D, E, F>(
+export const map5 = <X, A, B, C, D, E, F>(
   f: (a: A, b: B, c: C, d: D, e: E) => F,
-  r1: Result<Er, A>,
-  r2: Result<Er, B>,
-  r3: Result<Er, C>,
-  r4: Result<Er, D>,
-  r5: Result<Er, E>,
-): Result<Er, F> => {
+  r1: Result<X, A>,
+  r2: Result<X, B>,
+  r3: Result<X, C>,
+  r4: Result<X, D>,
+  r5: Result<X, E>,
+): Result<X, F> => {
   switch (r1.type) {
     case ResultType.Err:
       return Err(r1.err);
@@ -146,5 +146,17 @@ export const map5 = <Er, A, B, C, D, E, F>(
               }
           }
       }
+  }
+};
+
+export const andThen = <X, A, B>(
+  f: (a: A) => Result<X, B>,
+  r: Result<X, A>,
+): Result<X, B> => {
+  switch (r.type) {
+    case ResultType.Err:
+      return Err(r.err);
+    case ResultType.Ok:
+      return f(r.value);
   }
 };
