@@ -75,15 +75,77 @@ Deno.test("mapNTests", async (t) => {
       ),
     );
   });
+
+  await t.step("map3 Ok", () => {
+    assertEquals(
+      Result.Ok(6),
+      Result.map3(add3, Result.Ok(1), Result.Ok(2), Result.Ok(3)),
+    );
+  });
+
+  await t.step("map3 Err", () => {
+    assertEquals(
+      Result.Err("x"),
+      Result.map3(add3, Result.Ok(1), Result.Ok(2), Result.Err("x")),
+    );
+  });
+  await t.step("map4 Ok", () => {
+    assertEquals(
+      Result.Ok(10),
+      Result.map4(
+        add4,
+        Result.Ok(1),
+        Result.Ok(2),
+        Result.Ok(3),
+        Result.Ok(4),
+      ),
+    );
+  });
+
+  await t.step("map4 Err", () => {
+    assertEquals(
+      Result.Err("x"),
+      Result.map4(
+        add4,
+        Result.Ok(1),
+        Result.Ok(2),
+        Result.Ok(3),
+        Result.Err("x"),
+      ),
+    );
+  });
+
+  await t.step("map5 Ok", () => {
+    assertEquals(
+      Result.Ok(15),
+      Result.map5(
+        add5,
+        Result.Ok(1),
+        Result.Ok(2),
+        Result.Ok(3),
+        Result.Ok(4),
+        Result.Ok(5),
+      ),
+    );
+  });
+
+  await t.step("map5 Err", () => {
+    assertEquals(
+      Result.Err("x"),
+      Result.map5(
+        add5,
+        Result.Ok(1),
+        Result.Ok(2),
+        Result.Ok(3),
+        Result.Ok(4),
+        Result.Err("x"),
+      ),
+    );
+  });
 });
+
 /*
-                , test "map3 Ok" <| \() -> Expect.equal (Ok 6) (Result.map3 add3 (Ok 1) (Ok 2) (Ok 3))
-                , test "map3 Err" <| \() -> Expect.equal (Err "x") (Result.map3 add3 (Ok 1) (Ok 2) (Err "x"))
-                , test "map4 Ok" <| \() -> Expect.equal (Ok 10) (Result.map4 add4 (Ok 1) (Ok 2) (Ok 3) (Ok 4))
-                , test "map4 Err" <| \() -> Expect.equal (Err "x") (Result.map4 add4 (Ok 1) (Ok 2) (Ok 3) (Err "x"))
-                , test "map5 Ok" <| \() -> Expect.equal (Ok 15) (Result.map5 add5 (Ok 1) (Ok 2) (Ok 3) (Ok 4) (Ok 5))
-                , test "map5 Err" <| \() -> Expect.equal (Err "x") (Result.map5 add5 (Ok 1) (Ok 2) (Ok 3) (Ok 4) (Err "x"))
-                ]
+]
 
         andThenTests =
             describe "andThen Tests"
