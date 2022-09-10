@@ -1,4 +1,4 @@
-enum ResultType {
+export enum ResultType {
   Ok = "result-type__ok",
   Err = "result-type__err",
 }

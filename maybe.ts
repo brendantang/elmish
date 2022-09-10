@@ -1,4 +1,4 @@
-enum MaybeType {
+export enum MaybeType {
   Just = "maybe-type__just",
   Nothing = "maybe-type__nothing",
 }
