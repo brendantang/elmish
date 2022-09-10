@@ -144,13 +144,16 @@ Deno.test("mapNTests", async (t) => {
   });
 });
 
+Deno.test("andThenTests", async (t) => {
+  await t.step("andThen Ok", () => {
+    assertEquals(
+      Result.Ok(42),
+      Result.andThen(isEven, toIntResult("42")),
+    );
+  });
+});
 /*
-]
-
-        andThenTests =
-            describe "andThen Tests"
-                [ test "andThen Ok" <| \() -> Expect.equal (Ok 42) ((toIntResult "42") |> Result.andThen isEven)
-                , test "andThen first Err" <|
+                await t.step("andThen first Err" <|
                     \() ->
                         Expect.equal
                             (Err "could not convert string '4.2' to an Int")
