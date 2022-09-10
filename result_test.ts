@@ -65,7 +65,7 @@ Deno.test("mapNTests", async (t) => {
 
   await t.step("map2 Err", () => {
     assertEquals(
-      Err("x"),
+      Result.Err("x"),
       Result.map2(
         (a: number, b: number): number => {
           return a + b;
