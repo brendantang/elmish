@@ -160,3 +160,15 @@ export const andThen = <X, A, B>(
       return f(r.value);
   }
 };
+
+export const withDefault = <X, T>(
+  d: T,
+  r: Result<X, T>,
+): T => {
+  switch (r.type) {
+    case ResultType.Err:
+      return d;
+    case ResultType.Ok:
+      return (r.value);
+  }
+};

@@ -164,3 +164,18 @@ Deno.test("andThenTests", async (t) => {
     );
   });
 });
+
+Deno.test("withDefault tests", async (t) => {
+  await t.step("withDefault Err", () => {
+    assertEquals(
+      10,
+      Result.withDefault(10, Result.Err("error")),
+    );
+  });
+  await t.step("withDefault Ok", () => {
+    assertEquals(
+      11,
+      Result.withDefault(10, Result.Ok(11)),
+    );
+  });
+});
