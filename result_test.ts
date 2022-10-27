@@ -1,4 +1,5 @@
 import * as Result from "./result.ts";
+import * as Maybe from "./maybe.ts";
 import { assertEquals } from "https://deno.land/std@0.154.0/testing/asserts.ts";
 
 const isEven = (n: number): Result.Result<string, number> => {
@@ -176,6 +177,32 @@ Deno.test("withDefault tests", async (t) => {
     assertEquals(
       11,
       Result.withDefault(10, Result.Ok(11)),
+    );
+  });
+});
+Deno.test("Maybe conversion tests", async (t) => {
+  await t.step("toMaybe Err", () => {
+    assertEquals(
+      Maybe.Nothing(),
+      Result.toMaybe(Result.Err("error")),
+    );
+  });
+  await t.step("toMaybe Ok", () => {
+    assertEquals(
+      Maybe.Just(11),
+      Result.toMaybe(Result.Ok(11)),
+    );
+  });
+  await t.step("fromMaybe Nothing", () => {
+    assertEquals(
+      Result.Err("error"),
+      Result.fromMaybe("error", Maybe.Nothing()),
+    );
+  });
+  await t.step("fromMaybe Just", () => {
+    assertEquals(
+      Result.Ok(1),
+      Result.fromMaybe("error", Maybe.Just(1)),
     );
   });
 });

@@ -1,3 +1,5 @@
+import * as Maybe from "./maybe.ts";
+
 export enum ResultType {
   Ok = "result-type__ok",
   Err = "result-type__err",
@@ -170,5 +172,28 @@ export const withDefault = <X, T>(
       return d;
     case ResultType.Ok:
       return (r.value);
+  }
+};
+
+export const toMaybe = <X, T>(
+  r: Result<X, T>,
+): Maybe.Maybe<T> => {
+  switch (r.type) {
+    case ResultType.Err:
+      return Maybe.Nothing();
+    case ResultType.Ok:
+      return Maybe.Just(r.value);
+  }
+};
+
+export const fromMaybe = <X, T>(
+  err: X,
+  m: Maybe.Maybe<T>,
+): Result<X, T> => {
+  switch (m.type) {
+    case Maybe.MaybeType.Nothing:
+      return Err(err);
+    case Maybe.MaybeType.Just:
+      return Ok(m.value);
   }
 };
