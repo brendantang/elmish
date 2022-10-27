@@ -197,3 +197,15 @@ export const fromMaybe = <X, T>(
       return Ok(m.value);
   }
 };
+
+export const mapError = <X, Y, T>(
+  f: (x: X) => Y,
+  r: Result<X, T>,
+): Result<Y, T> => {
+  switch (r.type) {
+    case ResultType.Err:
+      return Err(f(r.err));
+    case ResultType.Ok:
+      return r;
+  }
+};

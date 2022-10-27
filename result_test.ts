@@ -180,6 +180,7 @@ Deno.test("withDefault tests", async (t) => {
     );
   });
 });
+
 Deno.test("Maybe conversion tests", async (t) => {
   await t.step("toMaybe Err", () => {
     assertEquals(
@@ -203,6 +204,29 @@ Deno.test("Maybe conversion tests", async (t) => {
     assertEquals(
       Result.Ok(1),
       Result.fromMaybe("error", Maybe.Just(1)),
+    );
+  });
+});
+
+Deno.test("mapError tests", async (t) => {
+  interface TestErr {
+    message: string;
+    code: number;
+  }
+  const getMessage = (err: TestErr): string => {
+    return err.message;
+  };
+
+  await t.step("mapErr Err", () => {
+    assertEquals(
+      Result.Err("oops"),
+      Result.mapError(getMessage, Result.Err({ message: "oops", code: 404 })),
+    );
+  });
+  await t.step("mapErr Ok", () => {
+    assertEquals(
+      Result.Ok(1),
+      Result.mapError(getMessage, Result.Ok(1)),
     );
   });
 });
