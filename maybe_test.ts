@@ -1,13 +1,26 @@
 import { assertEquals } from "https://deno.land/std@0.154.0/testing/asserts.ts";
-import * as Maybe from "./maybe.ts";
+import {
+  andMap,
+  andThen,
+  Just,
+  map,
+  map2,
+  map3,
+  map4,
+  map5,
+  Maybe,
+  MaybeType,
+  Nothing,
+  withDefault,
+} from "./maybe.ts";
 
 Deno.test("withDefault Tests", async (t) => {
   await t.step("no default used", () => {
-    assertEquals(0, Maybe.withDefault(5, Maybe.Just(0)));
+    assertEquals(0, withDefault(5, Just(0)));
   });
 
   await t.step("default used", () => {
-    assertEquals(5, Maybe.withDefault(5, Maybe.Nothing()));
+    assertEquals(5, withDefault(5, Nothing()));
   });
 });
 
@@ -16,10 +29,10 @@ Deno.test("map Tests", async (t) => {
     return n + 1;
   };
   await t.step("on Nothing", () => {
-    assertEquals(Maybe.Nothing(), Maybe.map(f, Maybe.Nothing()));
+    assertEquals(Nothing(), map(f, Nothing()));
   });
   await t.step("on Just", () => {
-    assertEquals(Maybe.Just(1), Maybe.map(f, Maybe.Just(0)));
+    assertEquals(Just(1), map(f, Just(0)));
   });
 });
 
@@ -30,20 +43,20 @@ Deno.test("map2 Tests", async (t) => {
   await t.step(
     "on (Just, Just)",
     () => {
-      assertEquals(Maybe.Just(1), Maybe.map2(f, Maybe.Just(0), Maybe.Just(1)));
+      assertEquals(Just(1), map2(f, Just(0), Just(1)));
     },
   );
 
   await t.step("on (Just, Nothing)", () => {
     assertEquals(
-      Maybe.Nothing(),
-      Maybe.map2(f, Maybe.Just(0), Maybe.Nothing()),
+      Nothing(),
+      map2(f, Just(0), Nothing()),
     );
   });
   await t.step("on (Nothing, Just)", () => {
     assertEquals(
-      Maybe.Nothing(),
-      Maybe.map2(f, Maybe.Nothing(), Maybe.Just(1)),
+      Nothing(),
+      map2(f, Nothing(), Just(1)),
     );
   });
 });
@@ -53,22 +66,22 @@ Deno.test("andThen Tests", async (t) => {
     "succeeding chain",
     () => {
       assertEquals(
-        Maybe.Just(1),
-        Maybe.andThen((a) => Maybe.Just(a), Maybe.Just(1)),
+        Just(1),
+        andThen((a) => Just(a), Just(1)),
       );
     },
   );
 
   await t.step("failing chain (original Maybe failed)", () => {
     assertEquals(
-      Maybe.Nothing(),
-      Maybe.andThen((a) => Maybe.Just(a), Maybe.Nothing()),
+      Nothing(),
+      andThen((a) => Just(a), Nothing()),
     );
   });
   await t.step("failing chain (chained function failed)", () => {
     assertEquals(
-      Maybe.Nothing(),
-      Maybe.andThen((_a) => Maybe.Nothing(), Maybe.Just(1)),
+      Nothing(),
+      andThen((_a) => Nothing(), Just(1)),
     );
   });
 });
@@ -79,26 +92,26 @@ Deno.test("map3 Tests", async (t) => {
   };
   await t.step("on (Just, Just, Just)", () => {
     assertEquals(
-      Maybe.Just(3),
-      Maybe.map3(f, Maybe.Just(1), Maybe.Just(1), Maybe.Just(1)),
+      Just(3),
+      map3(f, Just(1), Just(1), Just(1)),
     );
   });
   await t.step("on (Just, Just, Nothing)", () => {
     assertEquals(
-      Maybe.Nothing(),
-      Maybe.map3(f, Maybe.Just(1), Maybe.Just(1), Maybe.Nothing()),
+      Nothing(),
+      map3(f, Just(1), Just(1), Nothing()),
     );
   });
-  await t.step("on (Just, Nothing, Maybe.Just())", () => {
+  await t.step("on (Just, Nothing, Just)", () => {
     assertEquals(
-      Maybe.Nothing(),
-      Maybe.map3(f, Maybe.Just(1), Maybe.Nothing(), Maybe.Just(1)),
+      Nothing(),
+      map3(f, Just(1), Nothing(), Just(1)),
     );
   });
-  await t.step("on (Nothing, Maybe.Just(), Maybe.Just())", () => {
+  await t.step("on (Nothing, Just, Just)", () => {
     assertEquals(
-      Maybe.Nothing(),
-      Maybe.map3(f, Maybe.Nothing(), Maybe.Just(1), Maybe.Just(1)),
+      Nothing(),
+      map3(f, Nothing(), Just(1), Just(1)),
     );
   });
 });
@@ -109,55 +122,55 @@ Deno.test("map4 Tests", async (t) => {
   };
   await t.step("on (Just, Just, Just, Just)", () => {
     assertEquals(
-      Maybe.Just(4),
-      Maybe.map4(f, Maybe.Just(1), Maybe.Just(1), Maybe.Just(1), Maybe.Just(1)),
+      Just(4),
+      map4(f, Just(1), Just(1), Just(1), Just(1)),
     );
   });
   await t.step("on (Just, Just, Just, Nothing)", () => {
     assertEquals(
-      Maybe.Nothing(),
-      Maybe.map4(
+      Nothing(),
+      map4(
         f,
-        Maybe.Just(1),
-        Maybe.Just(1),
-        Maybe.Just(1),
-        Maybe.Nothing(),
+        Just(1),
+        Just(1),
+        Just(1),
+        Nothing(),
       ),
     );
   });
   await t.step("on (Just, Just, Nothing, Just)", () => {
     assertEquals(
-      Maybe.Nothing(),
-      Maybe.map4(
+      Nothing(),
+      map4(
         f,
-        Maybe.Just(1),
-        Maybe.Just(1),
-        Maybe.Nothing(),
-        Maybe.Just(1),
+        Just(1),
+        Just(1),
+        Nothing(),
+        Just(1),
       ),
     );
   });
   await t.step("on (Just, Nothing, Just, Just)", () => {
     assertEquals(
-      Maybe.Nothing(),
-      Maybe.map4(
+      Nothing(),
+      map4(
         f,
-        Maybe.Just(1),
-        Maybe.Nothing(),
-        Maybe.Just(1),
-        Maybe.Just(1),
+        Just(1),
+        Nothing(),
+        Just(1),
+        Just(1),
       ),
     );
   });
   await t.step("on (Nothing, Just, Just, Just)", () => {
     assertEquals(
-      Maybe.Nothing(),
-      Maybe.map4(
+      Nothing(),
+      map4(
         f,
-        Maybe.Nothing(),
-        Maybe.Just(1),
-        Maybe.Just(1),
-        Maybe.Just(1),
+        Nothing(),
+        Just(1),
+        Just(1),
+        Just(1),
       ),
     );
   });
@@ -168,98 +181,128 @@ Deno.test("map5 Tests", async (t) => {
     return a + b + c + d + e;
   };
   await t.step(
-    "on (Just, Maybe.Just(), Maybe.Just(), Maybe.Just(), Maybe.Just())",
+    "on (Just, Just, Just, Just, Just)",
     () => {
       assertEquals(
-        Maybe.Just(5),
-        Maybe.map5(
+        Just(5),
+        map5(
           f,
-          Maybe.Just(1),
-          Maybe.Just(1),
-          Maybe.Just(1),
-          Maybe.Just(1),
-          Maybe.Just(1),
+          Just(1),
+          Just(1),
+          Just(1),
+          Just(1),
+          Just(1),
         ),
       );
     },
   );
   await t.step(
-    "on Maybe.Just, Maybe.Just(), Maybe.Just(), Maybe.Just(), Nothing)",
+    "on Just, Just, Just, Just, Nothing)",
     () => {
       assertEquals(
-        Maybe.Nothing(),
-        Maybe.map5(
+        Nothing(),
+        map5(
           f,
-          Maybe.Just(1),
-          Maybe.Just(1),
-          Maybe.Just(1),
-          Maybe.Just(1),
-          Maybe.Nothing(),
+          Just(1),
+          Just(1),
+          Just(1),
+          Just(1),
+          Nothing(),
         ),
       );
     },
   );
   await t.step(
-    "on Maybe.Just, Maybe.Just(), Maybe.Just(), Nothing, Maybe.Just())",
+    "on Just, Just, Just, Nothing, Just)",
     () => {
       assertEquals(
-        Maybe.Nothing(),
-        Maybe.map5(
+        Nothing(),
+        map5(
           f,
-          Maybe.Just(1),
-          Maybe.Just(1),
-          Maybe.Just(1),
-          Maybe.Nothing(),
-          Maybe.Just(1),
+          Just(1),
+          Just(1),
+          Just(1),
+          Nothing(),
+          Just(1),
         ),
       );
     },
   );
   await t.step(
-    "on Maybe.Just, Maybe.Just(), Nothing, Maybe.Just(), Maybe.Just())",
+    "on Just, Just, Nothing, Just, Just)",
     () => {
       assertEquals(
-        Maybe.Nothing(),
-        Maybe.map5(
+        Nothing(),
+        map5(
           f,
-          Maybe.Just(1),
-          Maybe.Just(1),
-          Maybe.Nothing(),
-          Maybe.Just(1),
-          Maybe.Just(1),
+          Just(1),
+          Just(1),
+          Nothing(),
+          Just(1),
+          Just(1),
         ),
       );
     },
   );
   await t.step(
-    "on Maybe.Just, Nothing, Maybe.Just(), Maybe.Just(), Maybe.Just())",
+    "on Just, Nothing, Just, Just, Just)",
     () => {
       assertEquals(
-        Maybe.Nothing(),
-        Maybe.map5(
+        Nothing(),
+        map5(
           f,
-          Maybe.Just(1),
-          Maybe.Nothing(),
-          Maybe.Just(1),
-          Maybe.Just(1),
-          Maybe.Just(1),
+          Just(1),
+          Nothing(),
+          Just(1),
+          Just(1),
+          Just(1),
         ),
       );
     },
   );
   await t.step(
-    "on (Nothing, Maybe.Just(), Maybe.Just(), Maybe.Just(), Maybe.Just())",
+    "on (Nothing, Just, Just, Just, Just)",
     () => {
       assertEquals(
-        Maybe.Nothing(),
-        Maybe.map5(
+        Nothing(),
+        map5(
           f,
-          Maybe.Nothing(),
-          Maybe.Just(1),
-          Maybe.Just(1),
-          Maybe.Just(1),
-          Maybe.Just(1),
+          Nothing(),
+          Just(1),
+          Just(1),
+          Just(1),
+          Just(1),
         ),
+      );
+    },
+  );
+});
+
+Deno.test("andMap tests", async (t) => {
+  await t.step(
+    "on Just, Just",
+    () => {
+      assertEquals(
+        Just(5),
+        andMap(Just(3), Just((n) => n + 2)),
+      );
+    },
+  );
+  await t.step(
+    "on Nothing, Just",
+    () => {
+      assertEquals(
+        Nothing(),
+        andMap(Nothing(), Just((n: number) => n + 2)),
+      );
+    },
+  );
+  await t.step(
+    "on Just, Nothing",
+    () => {
+      assertEquals(
+        Nothing(),
+        andMap(Just(3), Nothing()),
       );
     },
   );
