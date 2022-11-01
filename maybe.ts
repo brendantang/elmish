@@ -1,3 +1,4 @@
+import { Func } from "./internal.ts"
 export enum MaybeType {
   Just = "maybe-type__just",
   Nothing = "maybe-type__nothing",
@@ -190,11 +191,10 @@ export const map5 = <A, B, C, D, E, F>(
   }
 };
 
-type F<A, B> = (a: A) => B;
 
 export const andMap = <A, B>(
   maybeItem: Maybe<A>,
-  maybeFunction: Maybe<F<A, B>>,
+  maybeFunction: Maybe<Func<A, B>>,
 ): Maybe<B> => {
   switch (maybeItem.type) {
     case MaybeType.Just:

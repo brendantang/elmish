@@ -230,3 +230,24 @@ Deno.test("mapError tests", async (t) => {
     );
   });
 });
+
+Deno.test("andMap tests", async (t) => {
+  await t.step("on Err, Err", () => {
+    assertEquals(
+      Result.Err("oops"),
+      Result.andMap(Result.Err("oops"), Result.Err("no function")),
+    );
+  });
+  await t.step("on Ok, Err", () => {
+    assertEquals(
+      Result.Err("no function"),
+      Result.andMap(Result.Ok(1), Result.Err("no function")),
+    );
+  });
+  await t.step("on Ok, Ok", () => {
+    assertEquals(
+      Result.Ok(2),
+      Result.andMap(Result.Ok(1), Result.Ok((n: number) => n + 1)),
+    );
+  });
+});
