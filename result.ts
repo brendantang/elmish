@@ -1,5 +1,4 @@
 import * as Maybe from "./maybe.ts";
-import { Func } from "./internal.ts";
 
 export enum ResultType {
   Ok = "result-type__ok",
@@ -207,23 +206,6 @@ export const mapError = <X, Y, T>(
     case ResultType.Err:
       return Err(f(r.err));
     case ResultType.Ok:
-      return r;
-  }
-};
-
-export const andMap = <X, A, B>(
-  r: Result<X, A>,
-  f: Result<X, Func<A, B>>,
-): Result<X, B> => {
-  switch (r.type) {
-    case ResultType.Ok:
-      switch (f.type) {
-        case ResultType.Ok:
-          return Ok(f.value(r.value));
-        default:
-          return f;
-      }
-    case ResultType.Err:
       return r;
   }
 };

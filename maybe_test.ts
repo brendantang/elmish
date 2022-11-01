@@ -1,6 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.154.0/testing/asserts.ts";
 import {
-  andMap,
   andThen,
   Just,
   map,
@@ -8,8 +7,6 @@ import {
   map3,
   map4,
   map5,
-  Maybe,
-  MaybeType,
   Nothing,
   withDefault,
 } from "./maybe.ts";
@@ -273,36 +270,6 @@ Deno.test("map5 Tests", async (t) => {
           Just(1),
           Just(1),
         ),
-      );
-    },
-  );
-});
-
-Deno.test("andMap tests", async (t) => {
-  await t.step(
-    "on Just, Just",
-    () => {
-      assertEquals(
-        Just(5),
-        andMap(Just(3), Just((n) => n + 2)),
-      );
-    },
-  );
-  await t.step(
-    "on Nothing, Just",
-    () => {
-      assertEquals(
-        Nothing(),
-        andMap(Nothing(), Just((n: number) => n + 2)),
-      );
-    },
-  );
-  await t.step(
-    "on Just, Nothing",
-    () => {
-      assertEquals(
-        Nothing(),
-        andMap(Just(3), Nothing()),
       );
     },
   );
