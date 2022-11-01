@@ -1,4 +1,4 @@
-import { Func } from "./internal.ts"
+import { curry } from "./internal.ts";
 export enum MaybeType {
   Just = "maybe-type__just",
   Nothing = "maybe-type__nothing",
@@ -101,7 +101,7 @@ export const map2 = <A, B, C>(
   }
 };
 
-export const map3 = <A, B, C, D>(
+export const map3_ = <A, B, C, D>(
   f: (a: A, b: B, c: C) => D,
   m1: Maybe<A>,
   m2: Maybe<B>,
@@ -124,6 +124,17 @@ export const map3 = <A, B, C, D>(
       }
   }
 };
+
+export const map3 = <A, B, C, D>(
+  //f: (a: A, b: B, c: C) => D,
+  f: Function,
+  m1: Maybe<A>,
+  m2: Maybe<B>,
+  m3: Maybe<C>,
+): Maybe<D> => {
+  return andMap(m3, andMap(m2, andMap(m1, Just(curry(f)))));
+};
+
 export const map4 = <A, B, C, D, E>(
   f: (a: A, b: B, c: C, d: D) => E,
   m1: Maybe<A>,
@@ -191,16 +202,16 @@ export const map5 = <A, B, C, D, E, F>(
   }
 };
 
-
 export const andMap = <A, B>(
   maybeItem: Maybe<A>,
-  maybeFunction: Maybe<Func<A, B>>,
+  //maybeFunction: Maybe<(a: A) => B>,
+  maybeFunction: Maybe<Function>,
 ): Maybe<B> => {
   switch (maybeItem.type) {
     case MaybeType.Just:
       switch (maybeFunction.type) {
         case MaybeType.Just:
-          return Just(maybeFunction.value(maybeItem.value));
+          return Just(curry(maybeFunction.value)(maybeItem.value));
         default:
           return Nothing();
       }
@@ -208,3 +219,20 @@ export const andMap = <A, B>(
       return Nothing();
   }
 };
+
+/*
+export const map6 = <A, B, C, D, E, F, G>(
+  f: (a: A, b: B, c: C, d: D, e: E, f: F) => G,
+  m1: Maybe<A>,
+  m2: Maybe<B>,
+  m3: Maybe<C>,
+  m4: Maybe<D>,
+  m5: Maybe<E>,
+  m6: Maybe<F>,
+): Maybe<G> => {
+  return andMap(
+    m6,
+    andMap(m5, andMap(m4, andMap(m3, andMap(m2, andMap(m1, curry(f)))))),
+  );
+};
+*/

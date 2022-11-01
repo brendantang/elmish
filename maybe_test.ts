@@ -284,7 +284,7 @@ Deno.test("andMap tests", async (t) => {
     () => {
       assertEquals(
         Just(5),
-        andMap(Just(3), Just((n) => n + 2)),
+        andMap(Just(3), Just((n: number) => n + 2)),
       );
     },
   );
