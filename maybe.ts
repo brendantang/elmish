@@ -1,6 +1,6 @@
 export enum MaybeType {
-  Just = "maybe-type__just",
-  Nothing = "maybe-type__nothing",
+  Just = "just",
+  Nothing = "nothing",
 }
 
 interface Just<T> {

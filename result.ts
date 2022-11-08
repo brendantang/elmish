@@ -1,8 +1,8 @@
 import * as Maybe from "./maybe.ts";
 
 export enum ResultType {
-  Ok = "result-type__ok",
-  Err = "result-type__err",
+  Ok = "ok",
+  Err = "err",
 }
 
 interface Ok<T> {
